@@ -1,4 +1,5 @@
 import java.net.URL
+import java.nio.file.attribute.PosixFilePermissions
 import java.nio.file.{Files, Path, Paths}
 import java.util.zip.GZIPInputStream
 
@@ -54,6 +55,9 @@ class HaxeJar(haxeVer: String, jarDir: Path) {
       val path = jarDir.resolve(saveAs)
       Files.createDirectories(path.getParent)
       Files.write(path, bytes)
+      if ((entry.getMode & 0x40) != 0) { // 0o100 - execute flag
+        Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr-xr-x"))
+      }
     }
 
     println("Unpacking from archive")

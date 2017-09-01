@@ -36,7 +36,7 @@ haxeJar := {
 
   runScala(classPath, "HaxeJar", Seq(version.value, outDir.toString))
 
-  (outDir ** "*").filter(_.isFile).get
+  outDir.***.filter(_.isFile).get
 }
 
 resourceGenerators in Compile += haxeJar.taskValue
