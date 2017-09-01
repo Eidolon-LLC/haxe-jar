@@ -26,7 +26,7 @@ class HaxeJar(haxeVer: String, jarDir: Path) {
   val DownloadToPath = DownloadDir.resolve(DownloadName)
 
   /** Include only these files from std library */
-  val IncludeStdR = """[^/]+\.hx|(haxe|js)/.*""".r
+  val IncludeStdR = """[^/]+\.hx|(haxe|js|neko)/.*""".r
 
   val ResultBinHaxe = "bin/linux64/haxe"
 
