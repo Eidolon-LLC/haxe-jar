@@ -45,3 +45,13 @@ mappings in (Compile, packageBin) ~= (_.filterNot(_._1.getName.endsWith(".class"
 // Disable javadoc, source generation
 publishArtifact in (Compile, packageDoc) := false
 publishArtifact in (Compile, packageSrc) := false
+
+artifactClassifier := Some("haxe")
+
+
+// Deploy settings
+startYear := Some(2017)
+homepage := Some(url("https://github.com/citrum/haxe-jar"))
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+bintrayVcsUrl := Some("https://github.com/citrum/haxe-jar")
+bintrayOrganization := Some("citrum")
