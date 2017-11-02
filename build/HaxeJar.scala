@@ -26,13 +26,12 @@ class HaxeJar(haxeVer: String, jarDir: Path) {
   val DownloadToPath = DownloadDir.resolve(DownloadName)
 
   /** Include only these files from std library */
-  val IncludeStdR = """[^/]+\.hx|(haxe|js|neko)/.*""".r
+  val IncludeStdR = """[^/]+\.hx|(haxe|js|neko|sys)/.*""".r
 
   val ResultBinHaxe = "bin/linux64/haxe"
 
-  val BaseName = s"haxe-$haxeVer/"
-  val BaseStdName = BaseName + "std/"
-  val HaxeName = BaseName + "haxe"
+  val BaseStdR = """haxe[^/]+/std/(.*)$""".r
+  val HaxeNameR = """haxe[^/]+/haxe$""".r
 
   def prepareDirs(): Unit = {
     if (Files.isDirectory(jarDir)) FileUtils.deleteDirectory(jarDir.toFile)
@@ -61,19 +60,24 @@ class HaxeJar(haxeVer: String, jarDir: Path) {
     }
 
     println("Unpacking from archive")
+    var libFileCount = 0
     var entry: TarArchiveEntry = tarInput.getNextTarEntry
     while (entry != null) {
       if (!entry.isDirectory) {
         entry.getName match {
           // Save std library
-          case n if n.startsWith(BaseStdName) =>
-            val subName = entry.getName.substring(BaseStdName.length)
+          case BaseStdR(subName) =>
             if (IncludeStdR.pattern.matcher(subName).matches()) {
-              saveFile(entry, subName)
+              var name = subName
+              // Workaround for IDEA Scala `sys` bug https://youtrack.jetbrains.com/issue/SCL-12839
+              if (name.startsWith("sys/")) name = "sys_" + name.substring(3)
+
+              saveFile(entry, name)
+              libFileCount += 1
             }
 
           // Save binaries
-          case HaxeName =>
+          case HaxeNameR() =>
             saveFile(entry, ResultBinHaxe)
 
           case _ => // ignore
@@ -82,5 +86,7 @@ class HaxeJar(haxeVer: String, jarDir: Path) {
       entry = tarInput.getNextTarEntry
     }
     tarInput.close()
+
+    println("Library files packaged: " + libFileCount)
   }
 }

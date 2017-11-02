@@ -1,7 +1,7 @@
 name := "haxe-jar"
 organization := "com.github.citrum"
 
-version := "3.4.2"
+version := "3.4.4"
 
 scalaVersion := "2.12.3"
 
