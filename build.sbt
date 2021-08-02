@@ -12,6 +12,8 @@ unmanagedSourceDirectories in Compile := Seq(baseDirectory.value / "build")
 libraryDependencies += "org.apache.commons" % "commons-compress" % "1.14" % "provided"
 libraryDependencies += "commons-io" % "commons-io" % "2.5" % "provided"
 
+val owner = "eidolon-llc"
+val repo = "haxe-jar"
 
 lazy val haxeJarDirectory = taskKey[File]("Directory for building jar")
 haxeJarDirectory := target.value / "jar"
@@ -53,5 +55,7 @@ artifactClassifier := Some("haxe")
 startYear := Some(2017)
 homepage := Some(url("https://github.com/citrum/haxe-jar"))
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
-bintrayVcsUrl := Some("https://github.com/citrum/haxe-jar")
-bintrayOrganization := Some("citrum")
+publishTo := Some("GitHub Package Registry" at s"https://maven.pkg.github.com/$owner/$repo")
+scmInfo := Some(ScmInfo(url(s"https://github.com/$owner/$repo"), s"scm:git@github.com:$owner/$repo.git"))
+
+publishMavenStyle := true
